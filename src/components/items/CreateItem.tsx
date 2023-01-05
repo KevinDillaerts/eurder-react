@@ -13,7 +13,7 @@ const CreateItem = () => {
     const navigate = useNavigate();
 
     const onSubmit = async (data: ItemSchemaType) => {
-        addNewItem(data).then(response => console.log(response?.json()))
+        await addNewItem(data)
         reset();
         navigate("/items")
     };
@@ -48,14 +48,14 @@ const CreateItem = () => {
                     <div className="mb-4 me-3">
                         <label htmlFor="price" className="form-label">Price</label>
                         <div className="one-line">
-                            <span className="input-group-text eurosign">€</span>
+                            <span className="input-group-text position-absolute">€</span>
                             <input type="number" step=".05" className={`form-control ps-5 pe-0 ${errors.price && "is-invalid"}`} id="price"
                                    {...register("price", { valueAsNumber: true })}/>
                         </div>
                             {errors.price?.message && <p className="error-text">{errors.price?.message}</p>}
                     </div>
 
-                    <div className="mb-3">
+                    <div className="mb-4">
                         <label htmlFor="amount" className="form-label">Amount of stock</label>
                         <input type="number" className={`form-control ${errors.amountOfStock && "is-invalid"}`} id="amountOfStock"
                                {...register("amountOfStock", { valueAsNumber: true })}/>

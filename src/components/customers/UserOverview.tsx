@@ -2,10 +2,12 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {getAllUsers, BasicCustomerSchemaType} from "../../services/customerservice";
 import {Table} from "react-bootstrap";
 import Filter from "../items/Filter";
+import {useNavigate} from "react-router-dom";
 
 const UserOverview = () => {
     const [customers, setCustomers] = useState<BasicCustomerSchemaType[]>([])
     const [searchTerm, setSearchTerm] = useState("")
+    const navigate = useNavigate();
 
     const displayCustomers = useCallback(
         () => customers.filter(user => user.lastname.toLowerCase().startsWith(searchTerm.toLowerCase())),
@@ -15,6 +17,10 @@ const UserOverview = () => {
     useEffect(() => {
         getAllUsers().then(data => setCustomers(data))
     }, [])
+
+    function handleNewCustomerClick() {
+        navigate(`/users/create`)
+    }
 
     return (
         <div className="wrapper">
@@ -30,7 +36,7 @@ const UserOverview = () => {
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th className="d-flex justify-content-center">
-                            <button type="button" className="btn btn-success">New customer</button>
+                            <button type="button" onClick={handleNewCustomerClick} className="btn btn-success">New customer</button>
                         </th>
                     </tr>
                     </thead>
