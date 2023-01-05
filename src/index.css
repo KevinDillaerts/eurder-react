@@ -32,11 +32,11 @@
 
 .form-flex {
     display: flex;
-    align-items: end;
+    align-items: flex-end;
 }
 
 .start {
-    justify-content: start;
+    justify-content: flex-start;
 }
 .error-text {
     position: absolute;

@@ -23,7 +23,7 @@ export const fullCustomerSchema = z.object({
     }),
     address: z.object({
         streetName: z.string().min(2),
-        houseNumber: z.string(),
+        houseNumber: z.string().min(1),
         postalCode: z.string().min(4),
         country: z.nativeEnum(Country)
     }),
