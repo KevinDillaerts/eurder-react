@@ -3,6 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
+import {getSingleItem, updateItem} from "../../services/itemservice";
 
 const schema = z.object({
     name: z.string().min(2).max(50),
@@ -17,17 +18,14 @@ const ItemDetail = () => {
     const {register, handleSubmit, watch, reset, setValue, formState: {errors}} = useForm<FormSchemaType>({
         resolver: zodResolver(schema)
     });
-
     const {id} = useParams()
     const [editable, setEditable] = useState(false);
     const [item, setItem] = useState<FormSchemaType>()
+    const descriptionWatcher = watch("description", "");
+    const navigate = useNavigate();
 
     useEffect(() => {
-        (async function getItem() {
-            const response = await fetch(`http://localhost:9000/items/${id}`)
-            const data = await response.json()
-            setItem(data)
-        })()
+        id && getSingleItem(id).then(data => setItem(data))
     }, [id])
 
     useEffect(() => {
@@ -39,23 +37,8 @@ const ItemDetail = () => {
         }
     }, [item, setValue])
 
-    const descriptionWatcher = watch("description", "");
-
-    const navigate = useNavigate();
-
     const onSubmit = async (data: FormSchemaType) => {
-        const url = `http://localhost:9000/items/${id}`
-        try {
-            await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-        } catch (error: unknown) {
-            console.error(error)
-        }
+        id && updateItem(id, data).then(response => console.log(response?.json()))
         reset();
         navigate("/items")
     };

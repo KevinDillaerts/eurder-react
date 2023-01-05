@@ -1,37 +1,19 @@
-import {z} from "zod";
 import { useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useNavigate} from "react-router-dom";
-
-const schema = z.object({
-    name: z.string().min(2).max(50),
-    description: z.string().min(2).max(255),
-    price: z.number().nonnegative(),
-    amountOfStock: z.number().nonnegative()
-});
-
-type FormSchemaType = z.infer<typeof schema>;
+import {itemSchema, ItemSchemaType, addNewItem} from "../../services/itemservice";
 
 const CreateItem = () => {
-
-    const {register, handleSubmit, watch, reset, formState: {errors}} = useForm<FormSchemaType>({
-        resolver: zodResolver(schema)
+    const {register, handleSubmit, watch, reset, formState: {errors}} = useForm<ItemSchemaType>({
+        resolver: zodResolver(itemSchema)
     });
 
     const descriptionWatcher = watch("description", "");
 
     const navigate = useNavigate();
 
-    const onSubmit = async (data: FormSchemaType) => {
-        const url = "http://localhost:9000/items"
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        console.log(response.json());
+    const onSubmit = async (data: ItemSchemaType) => {
+        addNewItem(data).then(response => console.log(response?.json()))
         reset();
         navigate("/items")
     };

@@ -38,3 +38,8 @@
     position: absolute;
     color: red;
 }
+
+.hover-shadow:hover {
+    box-shadow: 3px 3px 5px 0 #0275d8;
+    transform: scale(1.03);
+}

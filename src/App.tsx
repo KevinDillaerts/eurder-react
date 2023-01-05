@@ -8,6 +8,8 @@ import Home from "./components/Home";
 import Items from "./components/items/Items";
 import CreateItem from "./components/items/CreateItem";
 import ItemDetail from "./components/items/ItemDetail";
+import UserOverview from "./components/customers/UserOverview";
+import CreateCustomer from "./components/customers/CreateCustomer";
 
 function App() {
     return (
@@ -21,6 +23,8 @@ function App() {
                             <Route path="/items" element={<Items />} />
                             <Route path="/items/:id" element={<ItemDetail />} />
                             <Route path="/items/create" element={<CreateItem />} />
+                            <Route path="/users" element={<UserOverview />} />
+                            <Route path="/users/create" element={<CreateCustomer />} />
                             <Route path="*" element={<Navigate to="/" />} />
                         </Routes>
                     </BrowserRouter>

@@ -17,7 +17,7 @@ const Header = () => {
                 <Nav className="ml-auto">
                     <Nav.Link href="/items">All items</Nav.Link>
                     <Nav.Link href="/items/create">Create item</Nav.Link>
-                    <Nav.Link href="/">Nav3</Nav.Link>
+                    <Nav.Link href="/users">Users</Nav.Link>
                 </Nav>
             </Container>
         </Navbar>

@@ -1,11 +1,11 @@
 import React, {useCallback, useState} from 'react';
 import Filter from "./Filter";
 import {Badge, Card, Container} from "react-bootstrap";
-import {Item} from "../../types/types";
 import {useNavigate} from "react-router-dom";
+import {ItemSchemaType} from "../../services/itemservice";
 
 interface ItemGalleryProps {
-    items: Item[];
+    items: ItemSchemaType[];
 }
 
 const ItemGallery = ({items}: ItemGalleryProps) => {
@@ -34,14 +34,15 @@ const ItemGallery = ({items}: ItemGalleryProps) => {
 
     return (
         <>
-
             <div className="one-line mb-3">
                 <h1>Items</h1>
                 <Filter searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
             </div>
             <Container className="item-container mx-auto">
                 {items.length > 0 ? displayItems().map(item =>
-                        (<Card key={item.id} onClick={() => handleItemClick(item.id)} style={{width: '320px'}}>
+                        (<Card key={item.id} onClick={() => item.id && handleItemClick(item.id)}
+                               className="hover-shadow"
+                               style={{width: '320px', cursor: "pointer"}}>
                             <Card.Img variant="top" src="https://placekeanu.com/320/180"/>
                             <Card.Body>
                                 <Card.Title>{item.name}</Card.Title>
@@ -50,8 +51,8 @@ const ItemGallery = ({items}: ItemGalleryProps) => {
                                         € {item.price}
                                     </Card.Text>
                                     <Badge
-                                        className={`badge rounded-pill bg-${setStockColor(item.stockUrgency)} px-2 py-1`}>
-                                        {item.stockUrgency.toLowerCase().substring(6)}
+                                        className={`badge rounded-pill bg-${setStockColor(item.stockUrgency ?? "")} px-2 py-1`}>
+                                        {item.stockUrgency?.toLowerCase().substring(6)}
                                     </Badge>
                                 </div>
                             </Card.Body>
