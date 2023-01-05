@@ -7,6 +7,7 @@ import {BrowserRouter, Navigate, Outlet, Route, Routes} from "react-router-dom";
 import Home from "./components/Home";
 import Items from "./components/items/Items";
 import CreateItem from "./components/items/CreateItem";
+import ItemDetail from "./components/items/ItemDetail";
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/items" element={<Items />} />
+                            <Route path="/items/:id" element={<ItemDetail />} />
                             <Route path="/items/create" element={<CreateItem />} />
                             <Route path="*" element={<Navigate to="/" />} />
                         </Routes>

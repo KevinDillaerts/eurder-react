@@ -2,6 +2,7 @@ import React, {useCallback, useState} from 'react';
 import Filter from "./Filter";
 import {Badge, Card, Container} from "react-bootstrap";
 import {Item} from "../../types/types";
+import {useNavigate} from "react-router-dom";
 
 interface ItemGalleryProps {
     items: Item[];
@@ -9,6 +10,7 @@ interface ItemGalleryProps {
 
 const ItemGallery = ({items}: ItemGalleryProps) => {
     const [searchTerm, setSearchTerm] = useState("")
+    const navigate = useNavigate();
 
     const displayItems = useCallback(
         () => items.filter(item => item.name.toLowerCase().startsWith(searchTerm.toLowerCase())),
@@ -26,6 +28,10 @@ const ItemGallery = ({items}: ItemGalleryProps) => {
         }
     }
 
+    function handleItemClick(id: string) {
+        navigate(`/items/${id}`)
+    }
+
     return (
         <>
 
@@ -35,7 +41,7 @@ const ItemGallery = ({items}: ItemGalleryProps) => {
             </div>
             <Container className="item-container mx-auto">
                 {items.length > 0 ? displayItems().map(item =>
-                        (<Card style={{width: '320px'}}>
+                        (<Card key={item.id} onClick={() => handleItemClick(item.id)} style={{width: '320px'}}>
                             <Card.Img variant="top" src="https://placekeanu.com/320/180"/>
                             <Card.Body>
                                 <Card.Title>{item.name}</Card.Title>
