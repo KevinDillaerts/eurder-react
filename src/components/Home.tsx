@@ -2,9 +2,12 @@ import React from 'react';
 
 const Home = () => {
     return (
-        <h1>
-           Welcome to Örder
-        </h1>
+        <div className="wrapper">
+            <h1>
+                Welcome to Örder
+            </h1>
+            <img src="https://placekeanu.com/540/450" alt="Welcome to order"/>
+        </div>
     );
 };
 

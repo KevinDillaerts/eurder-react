@@ -4,6 +4,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {getSingleItem, updateItem} from "../../services/itemservice";
+import {addToBasket} from "../../services/basketService";
 
 const schema = z.object({
     name: z.string().min(2).max(50),
@@ -15,27 +16,27 @@ const schema = z.object({
 type FormSchemaType = z.infer<typeof schema>;
 
 const ItemDetail = () => {
-    const {register, handleSubmit, watch, reset, setValue, formState: {errors}} = useForm<FormSchemaType>({
+    const {register, handleSubmit, watch, reset, formState: {errors}} = useForm<FormSchemaType>({
         resolver: zodResolver(schema)
     });
     const {id} = useParams()
-    const [editable, setEditable] = useState(false);
+    const [editable, setEditable] = useState(true);
     const [item, setItem] = useState<FormSchemaType>()
     const descriptionWatcher = watch("description", "");
     const navigate = useNavigate();
 
     useEffect(() => {
-        id && getSingleItem(id).then(data => setItem(data))
+        if (id) {
+            getSingleItem(id).then(data => setItem(data))
+            setEditable(false)
+        }
     }, [id])
 
     useEffect(() => {
         if (item) {
-            setValue("name", item.name)
-            setValue("description", item.description)
-            setValue("price", item.price)
-            setValue("amountOfStock", item.amountOfStock)
+            reset(item)
         }
-    }, [item, setValue])
+    }, [item, reset])
 
     const onSubmit = async (data: FormSchemaType) => {
         id && updateItem(id, data).then(response => console.log(response?.json()))
@@ -43,19 +44,26 @@ const ItemDetail = () => {
         navigate("/items")
     };
 
-
-    function handleBackClick() {
-        navigate("/items")
-    }
-
     function handleEditClick(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault()
         setEditable(true)
     }
 
+    async function handleAddToBasketClick() {
+      item && await addToBasket(item)
+    }
+
+    function handleInEditBackClick() {
+        setEditable(false)
+        navigate(`/items/${id}`)
+    }
+
     return (
         <div className="wrapper">
-            <h1>Item details</h1>
+            <h1>Item {id}</h1>
+            <button type="button" onClick={() => navigate("/basket")}
+                    className="btn btn-info btn-lg col-2 ms-auto">View basket
+            </button>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
                     <label htmlFor="name" className="form-label">Name</label>
@@ -76,11 +84,11 @@ const ItemDetail = () => {
                     </div>
                 </div>
 
-                <div className="one-line start">
-                    <div className="mb-4 me-3">
+                <div className="one-line start mb-3">
+                    <div className="me-3">
                         <label htmlFor="price" className="form-label">Price</label>
                         <div className="one-line">
-                            <span className="input-group-text eurosign">€</span>
+                            <span className="input-group-text position-absolute">€</span>
                             <input type="number" step=".05"
                                    className={`form-control ps-5 pe-0 ${errors.price && "is-invalid"}`} id="price"
                                    disabled={!editable}
@@ -89,7 +97,7 @@ const ItemDetail = () => {
                         {errors.price?.message && <p className="error-text">{errors.price?.message}</p>}
                     </div>
 
-                    <div className="mb-3">
+                    <div>
                         <label htmlFor="amount" className="form-label">Amount of stock</label>
                         <input type="number" className={`form-control ${errors.amountOfStock && "is-invalid"}`}
                                id="amount" disabled={!editable}
@@ -98,13 +106,25 @@ const ItemDetail = () => {
                     </div>
                 </div>
                 <div className="row mt-5">
-                    {editable ? <button type="submit" className="btn btn-success btn-lg col-8">Update</button>
-                        : <button type="button" onClick={handleEditClick}
-                                  className="btn btn-primary btn-lg col-8">Edit</button>
+                    {!editable && <button type="button" onClick={handleAddToBasketClick}
+                             className="btn btn-info btn-lg col-2">Add to basket
+                    </button>}
+                    {editable ?
+                        <>
+                        <button type="submit" className="btn btn-success btn-lg col-4 ms-auto">Update</button>
+                        <button type="button" onClick={handleInEditBackClick}
+                                className="btn btn-warning btn-lg col-2 ms-2">Back
+                        </button>
+                        </>
+                        :
+                        <>
+                        <button type="button" onClick={handleEditClick}
+                                  className="btn btn-primary btn-lg col-4 ms-auto">Edit</button>
+                        <button type="button" onClick={() => navigate(`/items`)}
+                        className="btn btn-warning btn-lg col-2 ms-2">Back
+                        </button>
+                        </>
                     }
-                    <button type="button" onClick={handleBackClick}
-                            className="btn btn-warning btn-lg col-3 ms-auto">Back
-                    </button>
                 </div>
             </form>
         </div>

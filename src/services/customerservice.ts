@@ -41,11 +41,31 @@ export const getAllUsers = async () => {
     return await response.json()
 }
 
+export const getSingleUser = async (id: string) => {
+    const response = await fetch(`http://localhost:9000/customers/${id}`)
+    return await response.json()
+}
+
 export const addCustomer = async (data: FullCustomerSchemaType) => {
     const url = "http://localhost:9000/customers"
     try {
         return await fetch(url, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+    } catch (error: any) {
+        console.error(error)
+    }
+}
+
+export const updateCustomer = async (id:string, data: FullCustomerSchemaType) => {
+    const url = `http://localhost:9000/customers/${id}`
+    try {
+        return await fetch(url, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },

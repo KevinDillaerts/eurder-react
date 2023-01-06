@@ -47,8 +47,8 @@ const UserOverview = () => {
                             <td>{firstname}</td>
                             <td>{lastname}</td>
                             <td className="d-flex justify-content-around">
-                                <button type="button" className="btn btn-warning">View</button>
-                                <button type="button" className="btn btn-primary">Edit</button>
+                                <button type="button" className="btn btn-warning" onClick={() => navigate(`/users/${id}`)}>View</button>
+                                <button type="button" className="btn btn-primary" onClick={() => navigate(`/users/${id}?edit=true`)}>Edit</button>
                             </td>
                         </tr>
                     )}
