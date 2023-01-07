@@ -5,6 +5,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {getSingleItem, updateItem} from "../../services/itemservice";
 import {addToBasket} from "../../services/basketService";
+import {Alert} from "react-bootstrap";
 
 const schema = z.object({
     name: z.string().min(2).max(50),
@@ -22,6 +23,7 @@ const ItemDetail = () => {
     const {id} = useParams()
     const [editable, setEditable] = useState(true);
     const [item, setItem] = useState<FormSchemaType>()
+    const [added, setAdded] = useState(false)
     const descriptionWatcher = watch("description", "");
     const navigate = useNavigate();
 
@@ -50,7 +52,8 @@ const ItemDetail = () => {
     }
 
     async function handleAddToBasketClick() {
-      item && await addToBasket(item)
+        item && await addToBasket(item)
+        setAdded(true)
     }
 
     function handleInEditBackClick() {
@@ -60,10 +63,17 @@ const ItemDetail = () => {
 
     return (
         <div className="wrapper">
-            <h1>Item {id}</h1>
-            <button type="button" onClick={() => navigate("/basket")}
-                    className="btn btn-info btn-lg col-2 ms-auto">View basket
-            </button>
+            <h2>Item {id}</h2>
+            {added &&
+                <div className="d-flex align-content-center my-3">
+                    <Alert variant="success">
+                        Item was added to your cart, visit your cart to update the quantity
+                    </Alert>
+                    <button type="button" onClick={() => navigate("/basket")}
+                            className="btn btn-info btn-lg col-2 ms-auto">View basket
+                    </button>
+                </div>
+            }
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
                     <label htmlFor="name" className="form-label">Name</label>
@@ -106,23 +116,24 @@ const ItemDetail = () => {
                     </div>
                 </div>
                 <div className="row mt-5">
-                    {!editable && <button type="button" onClick={handleAddToBasketClick}
-                             className="btn btn-info btn-lg col-2">Add to basket
+                    {!editable && !added && <button type="button" onClick={handleAddToBasketClick}
+                                          className="btn btn-info btn-lg col-2">Add to basket
                     </button>}
                     {editable ?
                         <>
-                        <button type="submit" className="btn btn-success btn-lg col-4 ms-auto">Update</button>
-                        <button type="button" onClick={handleInEditBackClick}
-                                className="btn btn-warning btn-lg col-2 ms-2">Back
-                        </button>
+                            <button type="submit" className="btn btn-success btn-lg col-4 ms-auto">Update</button>
+                            <button type="button" onClick={handleInEditBackClick}
+                                    className="btn btn-warning btn-lg col-2 ms-2">Back
+                            </button>
                         </>
                         :
                         <>
-                        <button type="button" onClick={handleEditClick}
-                                  className="btn btn-primary btn-lg col-4 ms-auto">Edit</button>
-                        <button type="button" onClick={() => navigate(`/items`)}
-                        className="btn btn-warning btn-lg col-2 ms-2">Back
-                        </button>
+                            <button type="button" onClick={handleEditClick}
+                                    className="btn btn-primary btn-lg col-4 ms-auto">Edit
+                            </button>
+                            <button type="button" onClick={() => navigate(`/items`)}
+                                    className="btn btn-warning btn-lg col-2 ms-2">Back
+                            </button>
                         </>
                     }
                 </div>

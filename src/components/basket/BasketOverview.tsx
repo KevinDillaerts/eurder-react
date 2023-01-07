@@ -5,6 +5,10 @@ import {useEffect, useState} from "react";
 
 const BasketOverview = () => {
     const [basket, setBasket] = useState(getBasket())
+    const {format} = new Intl.NumberFormat("nl-BE",
+        {
+            style: 'currency', currency: "EUR", maximumFractionDigits: 2
+        })
 
     const updateQuantity = (id: string, quantity: number) => {
         const updatedBasket = getBasket().map(basketItem => {
@@ -33,21 +37,24 @@ const BasketOverview = () => {
                         <th>ID</th>
                         <th>Name</th>
                         <th>Quantity</th>
-                        <th>Price</th>
+                        <th>Subtotal</th>
+                        <th>Remove</th>
                     </tr>
                     </thead>
                     <tbody>
                     {basket.map(item => <BasketDetailView
-                            key={item.itemId}
-                            item={item}
-                            updateQuantity={updateQuantity}
-                            deleteItem={deleteItem}
+                        key={item.itemId}
+                        item={item}
+                        updateQuantity={updateQuantity}
+                        deleteItem={deleteItem}
                     />)}
                     <tr>
                         <td></td>
                         <td></td>
-                        <td>total amount</td>
-                        <td>€ {basket.reduce((sub, item) => sub + (item.price * item.orderedAmount), 0)}</td>
+                        <td>Total amount</td>
+                        <td>{format(basket.reduce((sub, item) =>
+                            sub + (item.price * item.orderedAmount), 0))}</td>
+                        <td></td>
                     </tr>
                     </tbody>
                 </Table>

@@ -9,6 +9,10 @@ interface BasketInputProps {
 
 const BasketDetailView = ({updateQuantity, deleteItem, item}: BasketInputProps) => {
     const [amount, setAmount] = useState(item.orderedAmount)
+    const {format} = new Intl.NumberFormat("nl-BE",
+        {
+            style: 'currency', currency: "EUR", maximumFractionDigits: 2
+        })
 
     useEffect(() => {
         if (amount !== item.orderedAmount && amount > 0) {
@@ -27,8 +31,8 @@ const BasketDetailView = ({updateQuantity, deleteItem, item}: BasketInputProps) 
             <td>
                 <input type="number" value={amount} min={1} max={9999} onChange={handleInputChange}/>
             </td>
-            <td>€ {item.price * item.orderedAmount}</td>
-            <td><button type="button" onClick={ () => deleteItem(item.itemId)}
+            <td>{format(item.price * item.orderedAmount)}</td>
+            <td className="d-flex justify-content-center"><button type="button" onClick={ () => deleteItem(item.itemId)}
                         className="btn btn-danger">X</button></td>
         </tr>
     );
